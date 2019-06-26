@@ -4,6 +4,9 @@ from .t_getconsts import t_getconsts
 from .t_vuf import t_vuf
 from . import time as tm
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 def t_predic(t_time, names, freq, tidecon,
              lat=None, ltype='nodal', synth=0):
@@ -59,7 +62,7 @@ def t_predic(t_time, names, freq, tidecon,
     if synth > 0:
         I = snr > synth
         if not any(I):
-            print('No predictions with this SNR')
+            logger.warning('No predictions with this SNR')
             yout = np.nan + np.zeros(shape=(t_time.shape, t_time.shape),
                                      dtype='float64')
             return yout
