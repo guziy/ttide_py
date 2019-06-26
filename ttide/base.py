@@ -38,7 +38,7 @@ class TTideCon(dict):
             
         if to_file is None:
             return outstr
-        elif isinstance(to_file, file):
+        elif hasattr(to_file, "write"):
             to_file.write(outstr)
         else:
             with open(to_file, 'w') as fl:
@@ -48,7 +48,7 @@ class TTideCon(dict):
         outstr = tu.classic_style(self)
         if to_file is None:
             return outstr
-        elif isinstance(to_file, file):
+        elif hasattr(to_file, "write"):
             to_file.write(outstr)
         else:
             with open(to_file, 'w') as fl:
