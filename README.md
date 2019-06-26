@@ -37,21 +37,21 @@ Example Usage
 Imports and define some variables:
 
 ```python
-    import ttide as tt
-    import numpy as np
+import ttide as tt
+import numpy as np
 
-    t = np.arange(1001)
-    m2_freq = 2 * np.pi / 12.42
+t = np.arange(1001)
+m2_freq = 2 * np.pi / 12.42
 ```
 
 Here is an example 'real' (scalar) dataset:
 ```python
-    elev = 5 * np.cos(m2_freq * t)
+elev = 5 * np.cos(m2_freq * t)
 ```
 
 Compute the tidal fit:
 ```python
-    tfit_e = tt.t_tide(elev)
+tfit_e = tt.t_tide(elev)
 ```
 
 All other input is optional. Currently `dt`, `stime`, `lat`, `constitnames`, `output`, `errcalc`, `synth`, `out_style`, and `secular` can be specified. Take a look at the t\_tide docstring for more info on these variables. 
@@ -59,21 +59,21 @@ All other input is optional. Currently `dt`, `stime`, `lat`, `constitnames`, `ou
 `tfit_e` is an instance of the TTideCon ("TTide Constituents") class. It includes a `t_predic` method that is also availabe as the special `__call__` method. This makes it possible to construct the fitted time-series by simply doing:
 
 ```python
-    elev_fit = tfit_e(t)
+elev_fit = tfit_e(t)
 ```
 
 Or extrapolate the fit to other times:
 
 ```python
-    extrap_fit = tfit_e(np.arange(2000,2500))
+extrap_fit = tfit_e(np.arange(2000,2500))
 ```
 
 And here is an example 'complex' (vector) dataset:
 
 ```python
-    vel = 0.8 * elev + 1j * 2 * np.sin(m2_freq * t)
+vel = 0.8 * elev + 1j * 2 * np.sin(m2_freq * t)
 
-    tfit_v = tt.t_tide(vel)
+tfit_v = tt.t_tide(vel)
 
 ```
 And so on...
