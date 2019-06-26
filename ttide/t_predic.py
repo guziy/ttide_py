@@ -20,7 +20,7 @@ def t_predic(t_time, names, freq, tidecon,
     tidecon : array_like (M, P)
         The tidal constituent amplitudes, phases, and orientations. P
         is either 4 (for real output), or 8 (for complex output).
-    lat : flaot
+    lat : float
         decimal degrees (+north) (default: None)
         In the simplest case, the tidal analysis was done without nodal
         corrections, and thus neither will the prediction. If nodal
