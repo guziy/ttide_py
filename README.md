@@ -28,7 +28,7 @@ Installation
 
 This has little to no testing. Use at your own risk. To install, run:
 
-    python setup.py install
+    pip install .
 
 
 Example Usage
