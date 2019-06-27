@@ -14,7 +14,7 @@ def t_predic(t_time, names, freq, tidecon,
 
     Parameters
     ----------
-    time : array_like (N)
+    t_time : array_like (N)
         The array of times at which to make predictions.
     names : array_like (M)
         The constituent name strings (e.g. ['M2', 'S2', ...])
