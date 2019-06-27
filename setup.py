@@ -15,4 +15,4 @@ setup(name='ttide',
       license='MIT',
       packages=['ttide'],
       package_data={'ttide': ['data/*.nc']},
-      zip_safe=False)
+      zip_safe=False, install_requires=['numpy', 'scipy'])
