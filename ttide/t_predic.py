@@ -136,7 +136,7 @@ def t_predic(t_time, names, freq, tidecon,
         yout[j1:j2] = np.sum(np.multiply(np.exp(touter), tap), axis=0) +\
             np.sum(np.multiply(np.exp(-touter), tam), axis=0)
 
-    if (tidecon.shape[1] == 4):
+    if tidecon.shape[1] == 4:
         return np.real(yout)
     else:
         return yout
