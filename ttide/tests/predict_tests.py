@@ -27,13 +27,14 @@ def gen_predict_tests(make_data=False):
         else:
             yield compare_vec2file, xout, fname
 
-# if __name__ == '__main__':
 
-#     ###
-#     # This block generates the output files.
-#     # USE WITH CAUTION!
-#     for tst in gen_predict_tests(make_data=True):
-#         pass
+if __name__ == '__main__':
 
-#     # for f, vec, fname in gen_predict_tests():
-#     #     f(vec, fname)
+    ###
+    # This block generates the output files.
+    # USE WITH CAUTION!
+    # for tst in gen_predict_tests(make_data=True):
+    #     pass
+
+    for f, vec, fname in gen_predict_tests():
+        f(vec, fname)
