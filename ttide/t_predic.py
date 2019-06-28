@@ -5,6 +5,7 @@ from .t_vuf import t_vuf
 from . import time as tm
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 
@@ -126,15 +127,12 @@ def t_predic(t_time, names, freq, tidecon,
     yout = np.zeros([n * m, ], dtype='complex128')
 
     # longer than one year hourly.
-    for j1 in np.arange(0, ntime, nsub):
-        j1 = j1.astype(int)
-        j2 = np.min([j1 + nsub, ntime]).astype(int)
-        tap = np.repeat(ap, j2 - j1).reshape(len(ap), j2 - j1)
-        tam = np.repeat(am, j2 - j1).reshape(len(am), j2 - j1)
+    for j1 in range(0, ntime, nsub):
+        j2 = min(j1 + nsub, ntime)
 
         touter = np.outer(24 * 1j * 2 * np.pi * freq, t_time[j1:j2])
-        yout[j1:j2] = np.sum(np.multiply(np.exp(touter), tap), axis=0) +\
-            np.sum(np.multiply(np.exp(-touter), tam), axis=0)
+        yout[j1:j2] = np.sum(np.exp(touter) * ap[:, np.newaxis], axis=0) + \
+                      np.sum(np.exp(-touter) * am[:, np.newaxis], axis=0)
 
     if tidecon.shape[1] == 4:
         return np.real(yout)
