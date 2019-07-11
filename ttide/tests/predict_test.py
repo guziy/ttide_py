@@ -29,7 +29,7 @@ def test_tpredic_with_pandas_dates():
 
         dl = np.asarray(list(dr))
         const_names = np.asarray(["M2  ".encode(),])
-        const_freqs = np.asarray([0.0805114, ])
+        const_freqs = np.asarray([bmod.m2_freq, ])
         const_ampha = np.asarray([[5, 1, 0, 1], ])
 
         # set to a small value, but TODO: investigate how 0 could be allowed
@@ -45,7 +45,8 @@ def test_tpredic_with_pandas_dates():
 
 
         # harmonic analysis
-        tcon = t_tide(res, constitnames=["M2"], stime=date2num(dl[0]), lat=lat)
+        tcon = t_tide(res, constitnames=["M2"], stime=date2num(dl[0]), lat=lat,
+                      synth=0)
 
         logger.debug(tcon)
 
@@ -62,7 +63,7 @@ def compare_vec2file(x0, fname):
     x1 = np.loadtxt(bmod.testdir + 'data/predict/' + fname)
     if len(x1) == 2 * len(x0):
         x1 = x1.view(complex)
-    assert (np.abs(x0 - x1) < 1e-2).all(), ("Test failed on file '%s'" % fname)
+    assert (np.abs(x0 - x1) < 1e-2).all(), (f"Test failed on file '{fname}'")
 
 
 def gen_predict_tests(make_data=False):
@@ -78,6 +79,7 @@ def gen_predict_tests(make_data=False):
             yield compare_vec2file, xout, fname
 
 def test_predic():
+    # no files are written to disk by default (make_data=False)
     for f, vec, fname in gen_predict_tests():
         f(vec, fname)
 
