@@ -29,7 +29,7 @@ def test_tpredic_with_pandas_dates():
 
         dl = np.asarray(list(dr))
         const_names = np.asarray(["M2  ".encode(),])
-        const_freqs = np.asarray([bmod.m2_freq, ])
+        const_freqs = np.asarray([bmod.m2_freq / (np.pi * 2), ])
         const_ampha = np.asarray([[5, 1, 0, 1], ])
 
         # set to a small value, but TODO: investigate how 0 could be allowed
