@@ -33,6 +33,12 @@ def gen_print_tests(make_data=False):
         else:
             yield compare_string2file, stdout.getvalue(), fname
 
+# there are some differences in the outputs, maybe due to the bootstrap
+# not activating this test for now
+# def test_print():
+#     for f, p1, p2 in gen_print_tests():
+#         f(p1, p2)
+
 
 # if __name__ == '__main__':
 
