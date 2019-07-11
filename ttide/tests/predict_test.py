@@ -7,6 +7,8 @@ from ttide.t_predic import t_predic
 from ttide.tests import base as bmod
 import copy
 
+from ttide.time import date2num
+
 cases = copy.deepcopy(bmod.cases)
 
 t = np.arange(0, 60, 0.3)
@@ -27,15 +29,33 @@ def test_tpredic_with_pandas_dates():
 
         dl = np.asarray(list(dr))
         const_names = np.asarray(["M2  ".encode(),])
-        const_freqs = np.asarray([1. / 12., ])
+        const_freqs = np.asarray([0.0805114, ])
         const_ampha = np.asarray([[5, 1, 0, 1], ])
 
+        # set to a small value, but TODO: investigate how 0 could be allowed
+        lat = 0.1
+
         # should not fail
-        res = t_predic(dl, const_names, const_freqs, const_ampha)
+        res = t_predic(dl, const_names, const_freqs, const_ampha, lat=lat)
+
+        logger.debug(res)
+
+        # length of the result should be equal to the length of the time vector
+        assert len(res) == len(dl)
+
+
+        # harmonic analysis
+        tcon = t_tide(res, constitnames=["M2"], stime=date2num(dl[0]), lat=lat)
+
+        logger.debug(tcon)
+
+        err = np.mean((tcon["xout"].squeeze() - res) ** 2) ** 0.5
+
+        logger.debug([err, tcon["xout"], res])
+        assert err <= 1.e-6
 
     except ImportError:
         logger.info("Not testing t_predict with pandas, probably not installed")
-
 
 
 def compare_vec2file(x0, fname):
@@ -57,14 +77,19 @@ def gen_predict_tests(make_data=False):
         else:
             yield compare_vec2file, xout, fname
 
+def test_predic():
+    for f, vec, fname in gen_predict_tests():
+        f(vec, fname)
+
+
 
 if __name__ == '__main__':
-
+    pass
     ###
     # This block generates the output files.
     # USE WITH CAUTION!
     # for tst in gen_predict_tests(make_data=True):
     #     pass
-
-    for f, vec, fname in gen_predict_tests():
-        f(vec, fname)
+    #
+    # for f, vec, fname in gen_predict_tests():
+    #     f(vec, fname)
