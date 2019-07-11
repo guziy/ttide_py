@@ -8,7 +8,7 @@ This is a work in progress. It is not done.
 It is now mostly functional.
 Any help with finishing the conversion is welcome.
 
-Credit for T\_Tide goes to Rich Pawlowicz, the original creator of T\_Tide. 
+Credit for T\_Tide goes to Rich Pawlowicz, the original creator of T\_Tide.
 It is available at https://www.eoas.ubc.ca/~rich/.
 
 A description of the theoretical basis of the analysis and some
@@ -29,6 +29,10 @@ Installation
 This has little to no testing. Use at your own risk. To install, run:
 
     pip install .
+
+Run the tests, from the project folder:
+
+    py.test -v .
 
 
 Example Usage
@@ -54,7 +58,7 @@ Compute the tidal fit:
 tfit_e = tt.t_tide(elev)
 ```
 
-All other input is optional. Currently `dt`, `stime`, `lat`, `constitnames`, `output`, `errcalc`, `synth`, `out_style`, and `secular` can be specified. Take a look at the t\_tide docstring for more info on these variables. 
+All other input is optional. Currently `dt`, `stime`, `lat`, `constitnames`, `output`, `errcalc`, `synth`, `out_style`, and `secular` can be specified. Take a look at the t\_tide docstring for more info on these variables.
 
 `tfit_e` is an instance of the TTideCon ("TTide Constituents") class. It includes a `t_predic` method that is also availabe as the special `__call__` method. This makes it possible to construct the fitted time-series by simply doing:
 
@@ -84,6 +88,6 @@ Notes
 1. The code to handle timeseries longer then 18.6 years has not been converted yet.
 
 2. The code is a little messy and they are a few hacky bits that probably will need to be fixed. The most notable is in noise_realizations. It swaps eig vectors around to match Matlab's output.
-Also, the returned diagonal array would sometimes be a negative on the order of 10^-10. Values between (-0.00000000001,0) are forced to 0. 
+Also, the returned diagonal array would sometimes be a negative on the order of 10^-10. Values between (-0.00000000001,0) are forced to 0.
 
 3. ttide_py was initially converted to python with SMOP. Available at, https://github.com/victorlei/smop.git.
