@@ -7,7 +7,7 @@ except NameError:
     testdir = 'tests/'
 
 t = np.arange(1001)
-m2_freq = 2 * np.pi / 12.42
+m2_freq = 2 * np.pi / 12.420601
 shallow_freq = 2 * np.pi / 2.484120261
 
 # Build an M2 tidal series with 5m elevation
