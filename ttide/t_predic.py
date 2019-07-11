@@ -17,7 +17,6 @@ def t_predic(t_time, names, freq, tidecon,
     ----------
     t_time : array_like (N)
         The array of times at which to make predictions.
-        Usually in float days as in MATLAB
     names : array_like (M)
         The constituent name strings (e.g. ['M2', 'S2', ...])
     freq : array_like (M)
