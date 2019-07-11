@@ -63,6 +63,8 @@ def compare_vec2file(x0, fname):
     x1 = np.loadtxt(bmod.testdir + 'data/predict/' + fname)
     if len(x1) == 2 * len(x0):
         x1 = x1.view(complex)
+
+    logger.debug(f"x0, x1, {x0}, {x1}")
     assert (np.abs(x0 - x1) < 1e-2).all(), (f"Test failed on file '{fname}'")
 
 
