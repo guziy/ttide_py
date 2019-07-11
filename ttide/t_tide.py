@@ -24,7 +24,7 @@ def t_tide(xin, dt=1, stime=None, lat=None,
            shallownames=[], constitnames=[],
            errcalc='cboot', synth=2,
            lsq='best'):
-    """T_TIDE Harmonic analysis of a time series.
+    r"""T_TIDE Harmonic analysis of a time series.
 
     Parameters
     ----------
