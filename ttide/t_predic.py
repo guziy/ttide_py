@@ -3,6 +3,7 @@ import numpy as np
 from .t_getconsts import t_getconsts
 from .t_vuf import t_vuf
 from . import time as tm
+from . import t_utils as tu
 
 import logging
 
@@ -56,6 +57,8 @@ def t_predic(t_time, names, freq, tidecon,
         t_time = tm.date2num(t_time)
 
     t_time = t_time.reshape(-1, 1)
+
+    names = tu.fourpad(np.array(names))
 
     # Do the synthesis.
     snr = (tidecon[:, 0] / tidecon[:, 1]) ** 2
