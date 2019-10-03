@@ -6,7 +6,7 @@ def readme():
         return f.read()
 
 setup(name='ttide',
-      version='0.3_exp_001',
+      version='0.3_exp_002',
       description='Python distribution of the MatLab package TTide.',
       long_description=readme(),
       url='https://github.com/moflaher/ttide_py',
