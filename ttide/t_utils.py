@@ -24,12 +24,15 @@ if enc is None:
 
 
 def fourpad(conin):
-    conin = np.array(conin, dtype='|S4')
-    for i, con in enumerate(conin):
-        conin[i] = con.ljust(4)
+    """A bit faster implementation of the previous fourpad funciton
 
-    return conin
+    Args:
+        conin ([type]): [description]
 
+    Returns:
+        [type]: [description]
+    """
+    return np.array([c.ljust(4) for c in conin], dtype="|S4")
 
 def constituents(minres, constit, shallow, infname, infref, centraltime):
     """[name,freq,kmpr]=constituents(minres,infname) loads tidal constituent
