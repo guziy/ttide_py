@@ -584,6 +584,9 @@ def t_tide(xin, dt=1, stime=None, lat=None,
     # ----------------Generate 95% CI-----------------------------------
     # For bootstrapped errors, we now compute limits of the distribution.
     if errcalc.endswith('boot'):
+        import numba
+        
+        @numba.jit
         def booterrcalc(para, nreal):
             errval = np.multiply(
                 np.median(
