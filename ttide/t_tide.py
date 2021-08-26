@@ -591,8 +591,8 @@ def t_tide(xin, dt=1, stime=None, lat=None,
             errval = np.multiply(
                 np.median(
                     np.absolute(
-                        para - (np.median(para, 1).reshape(-1, 1) *
-                                np.ones([1, nreal]))), 1) / 0.6375, 1.96)
+                        para - (np.median(para, axis=1).reshape(-1, 1) *
+                                np.ones([1, nreal]))), axis=1) / 0.6375, 1.96)
             return errval
 
         emaj = booterrcalc(fmaj, nreal)
