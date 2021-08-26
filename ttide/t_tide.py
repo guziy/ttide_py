@@ -584,21 +584,18 @@ def t_tide(xin, dt=1, stime=None, lat=None,
     # ----------------Generate 95% CI-----------------------------------
     # For bootstrapped errors, we now compute limits of the distribution.
     if errcalc.endswith('boot'):
-        import numba
-        
-        @numba.jit
-        def booterrcalc(para, nreal):
-            errval = np.multiply(
-                np.median(
-                    np.absolute(
-                        para - (np.median(para, axis=1).reshape(-1, 1) *
-                                np.ones([1, nreal]))), axis=1) / 0.6375, 1.96)
+        def booterrcalc(para):
+            errval = 1.96 * np.median(
+                        np.absolute(
+                            para - np.median(para, axis=1).reshape(-1, 1)
+                        ), axis=1) / 0.6375
+
             return errval
 
-        emaj = booterrcalc(fmaj, nreal)
-        emin = booterrcalc(fmin, nreal)
-        einc = booterrcalc(finc, nreal)
-        epha = booterrcalc(pha, nreal)
+        emaj = booterrcalc(fmaj)
+        emin = booterrcalc(fmin)
+        einc = booterrcalc(finc)
+        epha = booterrcalc(pha)
 
     else:
         # In the linear analysis, the 95 CI are computed from the sigmas
