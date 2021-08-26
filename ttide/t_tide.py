@@ -210,8 +210,8 @@ def t_tide(xin, dt=1, stime=None, lat=None,
     corr_fac = np.array(corr_fac)
     infiname = np.array(infiname)
     infirefname = np.array(infirefname)
-    shallownames = tu.fourpad(np.array(shallownames))
-    constitnames = tu.fourpad(np.array(constitnames))
+    shallownames = tu.fourpad(shallownames)
+    constitnames = tu.fourpad(constitnames)
 
     isComplex = False
 
