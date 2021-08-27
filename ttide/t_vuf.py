@@ -62,7 +62,7 @@ def t_vuf(ltype, ctime, ju, lat=None):
             # hence (somewhat arbitrarily) forced to be no closer than
             # 5 deg to the equator, as per note in Foreman.
             if abs(lat) < 5:
-                lat = np.sign(lat) * 5
+                lat = np.sign(lat) * 5 if lat != 0 else 5
             slat = np.sin(np.pi * lat / 180)
             # Satellite amplitude ratio adjustment for latitude.
             rr = sat['amprat']
