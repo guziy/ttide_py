@@ -3,3 +3,5 @@ include *.md
 recursive-include ttide *.py
 recursive-include ttide *.csv
 recursive-include ttide/data *.npy
+recursive-include ttide *.so
+recursive-include ttide *.pyx
