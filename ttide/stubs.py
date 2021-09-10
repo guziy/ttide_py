@@ -6,3 +6,4 @@ def errell(asum, adiff, ercx, ercx1, eicx, eicx1):
 
     emaj, emin, einc, epha = [None, ] * 4 
     return emaj, emin, einc, epha
+    
