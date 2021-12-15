@@ -20,7 +20,7 @@ setup(name='ttide',
       package_data={'ttide': ['data/*.nc']},
       zip_safe=False, install_requires=['numpy', 'scipy'],
       ext_modules=cythonize([
-          Extension("ttide.t_tidec", ["ttide/t_tidec.pyx"])
+          Extension("ttide.t_tidec", ["ttide/t_tidec.pyx"],)
       ]),
-      include_dir=[np.get_include()]
+      include_dirs=[np.get_include()]
 )
