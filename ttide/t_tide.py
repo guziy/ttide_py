@@ -381,7 +381,7 @@ def t_tide(xin, dt=1, stime=None, lat=None,
     ####################################################################
     # ---------- Correct for prefiltering--------------------------------
     ####################################################################
-    corrfac = spi.interpolate.interp1d(corr_fs, corr_fac)(fu)
+    corrfac = spi.interp1d(corr_fs, corr_fac)(fu)
     # To stop things blowing up!
     corrfac[corrfac > 100] = 1
     corrfac[corrfac < 0.01] = 1

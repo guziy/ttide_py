@@ -3,7 +3,7 @@ import numpy as np
 import copy
 from .t_astron import t_astron
 import os.path as path
-from scipy.io.netcdf import netcdf_file as nopen
+from scipy.io import netcdf_file as nopen
 
 _base_dir = path.join(path.dirname(__file__), 'data')
 has_const = path.exists(path.join(_base_dir, 't_constituents_const.nc'))
