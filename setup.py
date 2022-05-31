@@ -9,7 +9,7 @@ def readme():
         return f.read()
 
 setup(name='ttide',
-      version='0.3.4',
+      version='0.3.5',
       description='Python distribution of the MatLab package TTide.',
       long_description=readme(),
       url='https://github.com/moflaher/ttide_py',
