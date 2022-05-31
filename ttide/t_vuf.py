@@ -48,7 +48,9 @@ def t_vuf(ltype, ctime, ju, lat=None):
         # (This only returns values when we have doodson#s,
         # i.e., not for the shallow water components,
         # but these will be computed later.)
-        v = np.fmod(np.dot(const['doodson'], astro) + const['semi'], 1)
+
+        v = np.dot(const['doodson'], astro) + const['semi']
+        v = np.fmod(v, 1, where=~np.isnan(v))
 
         if lat is not None:
             # If we have a latitude, get nodal corrections.
