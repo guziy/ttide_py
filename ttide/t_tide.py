@@ -342,7 +342,7 @@ def t_tide(xin, dt=1, stime=None, lat=None,
                                np.sin(2 * pi * np.outer(tslice, fu))])
                 rhs = rhs + np.dot(E.T, xin[(gd[(j1 - 1):j2] - 1)])
                 lhs = lhs + np.dot(E.T, E)
-        coef = np.linalg.lstsq(lhs, rhs)[0].T
+        coef = np.linalg.lstsq(lhs, rhs, rcond=None)[0].T
 
         # z0 a+ and a- amplitudes
         z0 = coef[0]
@@ -381,7 +381,7 @@ def t_tide(xin, dt=1, stime=None, lat=None,
     ####################################################################
     # ---------- Correct for prefiltering--------------------------------
     ####################################################################
-    corrfac = spi.interpolate.interp1d(corr_fs, corr_fac)(fu)
+    corrfac = spi.interp1d(corr_fs, corr_fac)(fu)
     # To stop things blowing up!
     corrfac[corrfac > 100] = 1
     corrfac[corrfac < 0.01] = 1
@@ -623,8 +623,6 @@ def t_tide(xin, dt=1, stime=None, lat=None,
     xoutOLD = xout
     if synth >= 0:
         if lat is not None and stime is not None:
-            # This does not account for latitude,
-            # functionality not added to t_predic yet.
             xout = t_predic(stime + np.array([range(nobs)]) * dt / 24.0,
                             nameu, fu, tidecon, synth=synth, lat=lat)
         elif stime is not None:
@@ -673,7 +671,7 @@ def t_tide(xin, dt=1, stime=None, lat=None,
             method = 'classic_style'
 
         if outfile:
-            getattr(out, method)(fname=outfile)
+            getattr(out, method)(to_file=outfile)
         else:
             print(getattr(out, method)(), end='')
 

@@ -48,7 +48,9 @@ def t_vuf(ltype, ctime, ju, lat=None):
         # (This only returns values when we have doodson#s,
         # i.e., not for the shallow water components,
         # but these will be computed later.)
-        v = np.fmod(np.dot(const['doodson'], astro) + const['semi'], 1)
+
+        v = np.dot(const['doodson'], astro) + const['semi']
+        v = np.fmod(v, 1, where=~np.isnan(v))
 
         if lat is not None:
             # If we have a latitude, get nodal corrections.
@@ -98,14 +100,17 @@ def t_vuf(ltype, ctime, ju, lat=None):
 
             # Compute amplitude and phase corrections
             # for shallow water constituents.
+            shallow_m1  = const['ishallow'].astype(int) -1
+            iname_m1    = shallow['iname'].astype(int) -1
+            coefs       = shallow['coef'].astype(np.float64)
+            range_cache = {n:np.arange(n) for n in range(const['nshallow'].max()+1)}
             for k in np.flatnonzero(np.isfinite(const['ishallow'])):
-                ik = ((const['ishallow'][k] - 1 +
-                       np.array(range(0, const['nshallow'][k]))).astype(int))
-                iname = shallow['iname'][ik] - 1
-                coef = shallow['coef'][ik]
-                f[k] = np.prod(np.power(f[iname], coef))
-                u[k] = np.dot(u[iname], coef)
-                v[k] = np.dot(v[iname], coef)
+                ik = shallow_m1[k] + range_cache[const['nshallow'][k]]
+                iname = iname_m1[ik]
+                coef = coefs[ik]
+                f[k] = np.multiply.reduce(np.power(f[iname], coef))
+                u[k] = u[iname].dot(coef)
+                v[k] = v[iname].dot(coef)
 
             f = f[ju]
             u = u[ju]
