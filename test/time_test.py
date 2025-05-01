@@ -1,4 +1,3 @@
-
 """
 Run these tests with py.test
 
@@ -6,16 +5,18 @@ Run these tests with py.test
 
 """
 
-
-from ttide import time
+import logging
 from datetime import datetime, timedelta
+
 import numpy as np
 
-import logging
+from ttide import time
+
 logging.basicConfig()
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+
 
 def test_date2num_with_pandas():
     """
@@ -23,6 +24,7 @@ def test_date2num_with_pandas():
     """
     try:
         import pandas as pd
+
         dt = timedelta(hours=1)
         dr = pd.date_range("2001-01-01", "2001-01-02", freq=dt)
         logger.debug(dr)
@@ -35,10 +37,15 @@ def test_date2num_with_pandas():
     except ImportError as ie:
         logger.info("Skipping pandas related tests, not installed")
 
+
 def test_date2num():
-    d = datetime(1,1,1)
+    d = datetime(1, 1, 1)
     assert time.date2num(d) == 1
     assert d.toordinal() == 1
 
-    d_arr = np.array([d, ])
+    d_arr = np.array(
+        [
+            d,
+        ]
+    )
     logger.info(time.date2num(d_arr))

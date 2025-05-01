@@ -1,12 +1,14 @@
 from __future__ import division, print_function
+
+import datetime
+
 import numpy as np
 import scipy.interpolate as spi
-from .t_vuf import t_vuf
-from . import t_utils as tu
-from .base import TTideCon, t_predic
-import datetime
-from . import time as tm
 
+from . import t_utils as tu
+from . import time as tm
+from .base import TTideCon, t_predic
+from .t_vuf import t_vuf
 
 pi = np.pi
 
@@ -14,16 +16,25 @@ pi = np.pi
 np.set_printoptions(precision=8, suppress=True)
 
 
-def t_tide(xin, dt=1, stime=None, lat=None,
-           out_style='classic',
-           outfile=None,
-           corr_fs=[0, 1e6], corr_fac=[1, 1],
-           secular='mean',
-           infiname=[], infirefname=[],
-           ray=1,
-           shallownames=[], constitnames=[],
-           errcalc='cboot', synth=2,
-           lsq='best'):
+def t_tide(
+    xin,
+    dt=1,
+    stime=None,
+    lat=None,
+    out_style="classic",
+    outfile=None,
+    corr_fs=[0, 1e6],
+    corr_fac=[1, 1],
+    secular="mean",
+    infiname=[],
+    infirefname=[],
+    ray=1,
+    shallownames=[],
+    constitnames=[],
+    errcalc="cboot",
+    synth=2,
+    lsq="best",
+):
     r"""T_TIDE Harmonic analysis of a time series.
 
     Parameters
@@ -218,8 +229,8 @@ def t_tide(xin, dt=1, stime=None, lat=None,
     # Check to make sure that incoming data is a vector.
     inn = xin.shape
     if len(inn) != 1:
-        raise ValueError('Input time series is not a vector')
-    if 'complex' in xin.dtype.name:
+        raise ValueError("Input time series is not a vector")
+    if "complex" in xin.dtype.name:
         isComplex = True
 
     # Check size of incoming data.
@@ -229,24 +240,24 @@ def t_tide(xin, dt=1, stime=None, lat=None,
     # This could be increased for nobs>10000.
     # 100,000 uses a reasonable amount of ram for current systems.
     # Kept as is for the time being to stay true to Matlab version.
-    if lsq[0:3] == 'bes':
+    if lsq[0:3] == "bes":
         if nobs > 1000000:
-            lsq = 'normal'
+            lsq = "normal"
         else:
-            lsq = 'direct'
+            lsq = "direct"
 
     # Check to see if timeseries spans 18.6 years.
     if nobs * dt > 18.6 * 365.25 * 24:
         longseries = 1
-        ltype = 'full'
+        ltype = "full"
     else:
         longseries = 0
-        ltype = 'nodal'
+        ltype = "nodal"
     nobsu = nobs - np.remainder(nobs - 1, 2)
 
     # Make series odd to give a center point
     # Time vector for entire time series centered at series midpoint.
-    t = (dt * (np.arange(nobs) + 1 - np.ceil(nobsu / 2)))
+    t = dt * (np.arange(nobs) + 1 - np.ceil(nobsu / 2))
 
     if stime is not None:
         centraltime = stime + np.floor(nobsu / 2) * dt / 24.0
@@ -254,10 +265,7 @@ def t_tide(xin, dt=1, stime=None, lat=None,
         centraltime = np.array([])
 
     # -------Get the frequencies to use in the harmonic analysis-----------
-    tmptuple = tu.constituents(ray / (dt * nobsu),
-                               constitnames, shallownames,
-                               infiname, infirefname,
-                               centraltime)
+    tmptuple = tu.constituents(ray / (dt * nobsu), constitnames, shallownames, infiname, infirefname, centraltime)
     nameu, fu, ju, namei, fi, jinf, jref = tmptuple
 
     mu = len(fu)
@@ -281,25 +289,27 @@ def t_tide(xin, dt=1, stime=None, lat=None,
     # for long time series, and for this the more complex block processing
     # algorithm was added. It should give
     # identical results (up to roundoff error)
-    if lsq[0:3] == 'dir':
-        if secular[0:3] == 'lin':
-            tc = np.hstack([np.ones((len(t), 1)),
-                            np.cos(2 * pi * np.outer(t, fu)),
-                            np.sin(2 * pi * np.outer(t, fu)),
-                            t.reshape(-1, 1) * (2 / dt / nobsu)])
+    if lsq[0:3] == "dir":
+        if secular[0:3] == "lin":
+            tc = np.hstack(
+                [
+                    np.ones((len(t), 1)),
+                    np.cos(2 * pi * np.outer(t, fu)),
+                    np.sin(2 * pi * np.outer(t, fu)),
+                    t.reshape(-1, 1) * (2 / dt / nobsu),
+                ]
+            )
         else:
-            tc = np.hstack([np.ones((len(t), 1)),
-                            np.cos(2 * pi * np.outer(t, fu)),
-                            np.sin(2 * pi * np.outer(t, fu))])
+            tc = np.hstack([np.ones((len(t), 1)), np.cos(2 * pi * np.outer(t, fu)), np.sin(2 * pi * np.outer(t, fu))])
 
         coef = np.linalg.lstsq(tc[gd, :], xin[gd], rcond=None)[0].T
 
         # z0 a+ and a- amplitudes
         z0 = coef[0]
-        ap = (coef[1:mu + 1] - 1j * coef[(1 + mu):(mu * 2) + 1]) / 2
-        am = (coef[1:mu + 1] + 1j * coef[(1 + mu):(mu * 2) + 1]) / 2
+        ap = (coef[1 : mu + 1] - 1j * coef[(1 + mu) : (mu * 2) + 1]) / 2
+        am = (coef[1 : mu + 1] + 1j * coef[(1 + mu) : (mu * 2) + 1]) / 2
 
-        if secular[0:3] == 'lin':
+        if secular[0:3] == "lin":
             dz0 = coef[-1]
         else:
             dz0 = 0
@@ -319,60 +329,76 @@ def t_tide(xin, dt=1, stime=None, lat=None,
         nsub = 5000
         # Block length - doesn't matter really but should be small enough to
         # get allocated quickly
-        if secular[0:3] == 'lin':
-            lhs = np.zeros(shape=(2 * mu + 2, 2 * mu + 2), dtype='float64')
-            rhs = np.zeros(shape=(2 * mu + 2, ), dtype='float64')
+        if secular[0:3] == "lin":
+            lhs = np.zeros(shape=(2 * mu + 2, 2 * mu + 2), dtype="float64")
+            rhs = np.zeros(shape=(2 * mu + 2,), dtype="float64")
             for j1 in range(1, (ngood + 1), nsub):
                 j2 = np.min([j1 + nsub - 1, ngood])
-                tslice = t[gd[(j1 - 1):j2] - 1]
-                E = np.hstack([np.ones((j2 - j1 + 1, 1)),
-                               np.cos(2 * pi * np.outer(tslice, fu)),
-                               np.sin(2 * pi * np.outer(tslice, fu)),
-                               tslice.reshape(-1, 1) * (2 / dt / nobsu)])
-                rhs = rhs + np.dot(E.T, xin[(gd[(j1 - 1):j2] - 1)])
+                tslice = t[gd[(j1 - 1) : j2] - 1]
+                E = np.hstack(
+                    [
+                        np.ones((j2 - j1 + 1, 1)),
+                        np.cos(2 * pi * np.outer(tslice, fu)),
+                        np.sin(2 * pi * np.outer(tslice, fu)),
+                        tslice.reshape(-1, 1) * (2 / dt / nobsu),
+                    ]
+                )
+                rhs = rhs + np.dot(E.T, xin[(gd[(j1 - 1) : j2] - 1)])
                 lhs = lhs + np.dot(E.T, E)
         else:
-            lhs = np.zeros(shape=(2 * mu + 1, 2 * mu + 1), dtype='float64')
-            rhs = np.zeros(shape=(2 * mu + 1, ), dtype='float64')
+            lhs = np.zeros(shape=(2 * mu + 1, 2 * mu + 1), dtype="float64")
+            rhs = np.zeros(shape=(2 * mu + 1,), dtype="float64")
             for j1 in range(1, (ngood + 1), nsub):
                 j2 = np.min([j1 + nsub - 1, ngood])
-                tslice = t[gd[(j1 - 1):j2] - 1]
-                E = np.hstack([np.ones((j2 - j1 + 1, 1)),
-                               np.cos(2 * pi * np.outer(tslice, fu)),
-                               np.sin(2 * pi * np.outer(tslice, fu))])
-                rhs = rhs + np.dot(E.T, xin[(gd[(j1 - 1):j2] - 1)])
+                tslice = t[gd[(j1 - 1) : j2] - 1]
+                E = np.hstack(
+                    [
+                        np.ones((j2 - j1 + 1, 1)),
+                        np.cos(2 * pi * np.outer(tslice, fu)),
+                        np.sin(2 * pi * np.outer(tslice, fu)),
+                    ]
+                )
+                rhs = rhs + np.dot(E.T, xin[(gd[(j1 - 1) : j2] - 1)])
                 lhs = lhs + np.dot(E.T, E)
         coef = np.linalg.lstsq(lhs, rhs, rcond=None)[0].T
 
         # z0 a+ and a- amplitudes
         z0 = coef[0]
-        ap = (coef[1:mu + 1] - 1j * coef[(1 + mu):(mu * 2) + 1]) / 2
-        am = (coef[1:mu + 1] + 1j * coef[(1 + mu):(mu * 2) + 1]) / 2
+        ap = (coef[1 : mu + 1] - 1j * coef[(1 + mu) : (mu * 2) + 1]) / 2
+        am = (coef[1 : mu + 1] + 1j * coef[(1 + mu) : (mu * 2) + 1]) / 2
 
-        if secular[0:3] == 'lin':
+        if secular[0:3] == "lin":
             dz0 = coef[-1]
         else:
             dz0 = 0
 
         xout = xin.copy()
         # Copies over NaN
-        if secular[0:3] == 'lin':
+        if secular[0:3] == "lin":
             for j1 in range(1, (nobs + 1), nsub):
                 j2 = np.min([j1 + nsub - 1, nobs])
-                tslice = t[(j1 - 1):j2]
-                E = np.hstack([np.ones((j2 - j1 + 1, 1)),
-                               np.cos(2 * pi * np.outer(tslice, fu)),
-                               np.sin(2 * pi * np.outer(tslice, fu)),
-                               np.dot(tslice, (2 / dt / nobsu)).reshape(-1, 1)])
-                xout[(j1 - 1):j2] = np.dot(E, coef)
+                tslice = t[(j1 - 1) : j2]
+                E = np.hstack(
+                    [
+                        np.ones((j2 - j1 + 1, 1)),
+                        np.cos(2 * pi * np.outer(tslice, fu)),
+                        np.sin(2 * pi * np.outer(tslice, fu)),
+                        np.dot(tslice, (2 / dt / nobsu)).reshape(-1, 1),
+                    ]
+                )
+                xout[(j1 - 1) : j2] = np.dot(E, coef)
         else:
             for j1 in range(1, (nobs + 1), nsub):
                 j2 = np.min([j1 + nsub - 1, nobs])
-                tslice = t[(j1 - 1):j2]
-                E = np.hstack([np.ones((j2 - j1 + 1, 1)),
-                               np.cos(2 * pi * np.outer(tslice, fu)),
-                               np.sin(2 * pi * np.outer(tslice, fu))])
-                xout[(j1 - 1):j2] = np.dot(E, coef)
+                tslice = t[(j1 - 1) : j2]
+                E = np.hstack(
+                    [
+                        np.ones((j2 - j1 + 1, 1)),
+                        np.cos(2 * pi * np.outer(tslice, fu)),
+                        np.sin(2 * pi * np.outer(tslice, fu)),
+                    ]
+                )
+                xout[(j1 - 1) : j2] = np.dot(E, coef)
 
     # Check variance explained
     # (but do this with the original fit, and the residuals!)
@@ -399,27 +425,25 @@ def t_tide(xin, dt=1, stime=None, lat=None,
     if lat is not None and stime is not None:
         # Time and latitude
         # Get nodal corrections at midpoint time.
-        v, u, f = t_vuf(ltype, centraltime,
-                        np.hstack([ju, jinf]).astype(int), lat)
+        v, u, f = t_vuf(ltype, centraltime, np.hstack([ju, jinf]).astype(int), lat)
         vu = (v + u) * 360
         # total phase correction (degrees)
-        nodcor = 'Greenwich phase computed with nodal\n \
+        nodcor = "Greenwich phase computed with nodal\n \
                   corrections applied to amplitude\n \
-                  and phase relative to center time\n'
+                  and phase relative to center time\n"
     elif stime is not None:
         # Time only
         # Get nodal corrections at midpoint time
-        v, u, f = t_vuf(ltype, centraltime,
-                        np.hstack([ju, jinf]).astype(int))
+        v, u, f = t_vuf(ltype, centraltime, np.hstack([ju, jinf]).astype(int))
         vu = (v + u) * 360
         # total phase correction (degrees)
-        nodcor = 'Greenwich phase computed, no nodal corrections'
+        nodcor = "Greenwich phase computed, no nodal corrections"
     else:
         # No time, no latitude
         nshape = (len(ju) + len(jinf), 1)
-        vu = np.zeros(nshape, dtype='float64')
-        f = np.ones(nshape, dtype='float64')
-        nodcor = 'Phases at central time'
+        vu = np.zeros(nshape, dtype="float64")
+        f = np.ones(nshape, dtype="float64")
+        nodcor = "Phases at central time"
 
     ####################################################################
     # ---------------Inference Corrections------------------------------
@@ -428,35 +452,23 @@ def t_tide(xin, dt=1, stime=None, lat=None,
     ####################################################################
     ii = np.flatnonzero(np.isfinite(jref))
     if ii.size > 0:
-        print('   Do inference corrections\\n')
+        print("   Do inference corrections\\n")
         snarg = nobsu * pi * dt * (fi[(ii - 1)] - fu[(jref[(ii - 1)] - 1)])
         scarg = np.sin(snarg) / snarg
         if infamprat.shape[1] == 1:
             # For real time series
-            pearg = np.dot(2 * pi,ii
-                           (vu[(mu + ii - 1)] -
-                            vu[(jref[(ii - 1)] - 1)] +
-                            infph[(ii - 1)])) / 360
-            pcfac = infamprat[(ii - 1)] * f[(mu + ii - 1)] / \
-                f[(jref[(ii - 1)] - 1)] * np.exp(np.dot(ii, pearg))
+            pearg = np.dot(2 * pi, ii(vu[(mu + ii - 1)] - vu[(jref[(ii - 1)] - 1)] + infph[(ii - 1)])) / 360
+            pcfac = infamprat[(ii - 1)] * f[(mu + ii - 1)] / f[(jref[(ii - 1)] - 1)] * np.exp(np.dot(ii, pearg))
             pcorr = 1 + pcfac * scarg
             mcfac = np.conj(pcfac)
             mcorr = np.conj(pcorr)
         else:
             # For complex time series
-            pearg = np.dot(2 * pi,
-                           (vu[(mu + ii - 1)] -
-                            vu[(jref[(ii - 1)] - 1)] +
-                            infph[(ii - 1), 0])) / 360
-            pcfac = infamprat[(ii - 1), 0] * f[(mu + ii - 1)] / \
-                f[(jref[(ii - 1)] - 1)] * np.exp(np.dot(i, pearg))
+            pearg = np.dot(2 * pi, (vu[(mu + ii - 1)] - vu[(jref[(ii - 1)] - 1)] + infph[(ii - 1), 0])) / 360
+            pcfac = infamprat[(ii - 1), 0] * f[(mu + ii - 1)] / f[(jref[(ii - 1)] - 1)] * np.exp(np.dot(i, pearg))
             pcorr = 1 + pcfac * scarg
-            mearg = np.dot(-2 * pi,
-                           (vu[(mu + ii - 1)] -
-                            vu[(jref[(ii - 1)] - 1)] +
-                            infph[(ii - 1), 1])) / 360
-            mcfac = infamprat[(ii - 1), 1] * f[(mu + ii - 1)] / \
-                f[(jref[(ii - 1)] - 1)] * np.exp(np.dot(i, mearg))
+            mearg = np.dot(-2 * pi, (vu[(mu + ii - 1)] - vu[(jref[(ii - 1)] - 1)] + infph[(ii - 1), 1])) / 360
+            mcfac = infamprat[(ii - 1), 1] * f[(mu + ii - 1)] / f[(jref[(ii - 1)] - 1)] * np.exp(np.dot(i, mearg))
             mcorr = 1 + mcfac * scarg
         ap[(jref[(ii - 1)] - 1)] = ap[(jref[(ii - 1)] - 1)] / pcorr
         # Changes to existing constituents
@@ -494,7 +506,7 @@ def t_tide(xin, dt=1, stime=None, lat=None,
 
     nreal = 1
 
-    if errcalc.endswith('boot'):
+    if errcalc.endswith("boot"):
         # print('Using nonlinear bootstrapped error estimates.');
         ################################################################
         # "noise" matrices are created with the right covariance
@@ -504,8 +516,7 @@ def t_tide(xin, dt=1, stime=None, lat=None,
 
         nreal = 300
         # Create noise matrices
-        NP, NM = tu.noise_realizations(xr[(np.isfinite(xr))],
-                                       fu, dt, nreal, errcalc)
+        NP, NM = tu.noise_realizations(xr[(np.isfinite(xr))], fu, dt, nreal, errcalc)
         # All replicates are then transformed (nonlinearly) into
         # ellipse parameters. The computed error bars are then
         # based on the std dev of the replicates.
@@ -522,8 +533,8 @@ def t_tide(xin, dt=1, stime=None, lat=None,
         ap = np.absolute(AP)
         am = np.absolute(AM)
     else:
-        if errcalc == 'linear':
-            print('Using linearized error estimates.')
+        if errcalc == "linear":
+            print("Using linearized error estimates.")
             ############################################################
             # Uncertainties in analyzed amplitudes are computed in
             # different spectral bands. Real and imaginary parts of
@@ -544,15 +555,13 @@ def t_tide(xin, dt=1, stime=None, lat=None,
             # a factor of 2 here somewhere but it only works this way!
             # <shrug>
 
-            emaj, emin, einc, epha = errell(ap + am, 1j * (ap - am),
-                                            ercx, ercx, eicx, eicx)
+            emaj, emin, einc, epha = errell(ap + am, 1j * (ap - am), ercx, ercx, eicx, eicx)
             epsp = 180 / np.pi * np.angle(ap)
             epsm = 180 / np.pi * np.angle(am)
             ap = np.absolute(ap)
             am = np.absolute(am)
         else:
-            print("Unrecognized type of error analysis: " +
-                  errcalc + " specified!")
+            print("Unrecognized type of error analysis: " + errcalc + " specified!")
     # -----Convert complex amplitudes to standard ellipse parameters----
     aap = ap / np.repeat(f, nreal).reshape(f.shape[0], nreal)
     # Apply nodal corrections and
@@ -567,7 +576,7 @@ def t_tide(xin, dt=1, stime=None, lat=None,
     # pos. Greenwich phase in deg.
     gm = np.mod(np.repeat(vu, nreal).reshape(vu.shape[0], nreal) + epsm, 360)
     # neg. Greenwich phase in deg.
-    finc = ((epsp + epsm) / 2)
+    finc = (epsp + epsm) / 2
     finc[:, 0] = np.mod(finc[:, 0], 180)
 
     # Ellipse inclination in degrees
@@ -583,12 +592,10 @@ def t_tide(xin, dt=1, stime=None, lat=None,
 
     # ----------------Generate 95% CI-----------------------------------
     # For bootstrapped errors, we now compute limits of the distribution.
-    if errcalc.endswith('boot'):
+    if errcalc.endswith("boot"):
+
         def booterrcalc(para):
-            errval = 1.96 * np.median(
-                        np.absolute(
-                            para - np.median(para, axis=1).reshape(-1, 1)
-                        ), axis=1) / 0.6375
+            errval = 1.96 * np.median(np.absolute(para - np.median(para, axis=1).reshape(-1, 1)), axis=1) / 0.6375
 
             return errval
 
@@ -606,8 +613,7 @@ def t_tide(xin, dt=1, stime=None, lat=None,
         epha = 1.96 * epha
 
     if isComplex:
-        tidecon = np.array([fmaj[:, 0], emaj, fmin[:, 0], emin,
-                            finc[:, 0], einc, pha[:, 0], epha]).T
+        tidecon = np.array([fmaj[:, 0], emaj, fmin[:, 0], emin, finc[:, 0], einc, pha[:, 0], epha]).T
     else:
         tidecon = np.array([fmaj[:, 0], emaj, pha[:, 0], epha]).T
     tideconout = tidecon.copy()
@@ -623,11 +629,9 @@ def t_tide(xin, dt=1, stime=None, lat=None,
     xoutOLD = xout
     if synth >= 0:
         if lat is not None and stime is not None:
-            xout = t_predic(stime + np.array([range(nobs)]) * dt / 24.0,
-                            nameu, fu, tidecon, synth=synth, lat=lat)
+            xout = t_predic(stime + np.array([range(nobs)]) * dt / 24.0, nameu, fu, tidecon, synth=synth, lat=lat)
         elif stime is not None:
-            xout = t_predic(stime + np.array([range(nobs)]) * dt / 24.0,
-                            nameu, fu, tidecon, synth=synth)
+            xout = t_predic(stime + np.array([range(nobs)]) * dt / 24.0, nameu, fu, tidecon, synth=synth)
         else:
             xout = t_predic(t / 24.0, nameu, fu, tidecon, synth=synth)
 
@@ -638,41 +642,41 @@ def t_tide(xin, dt=1, stime=None, lat=None,
     xout = xout.reshape(inn[0], 1)
 
     out = TTideCon()
-    out['nobs'] = nobs
-    out['ngood'] = ngood
-    out['dt'] = dt
-    out['xin'] = xin
-    out['xout'] = xout
-    out['xres'] = xres
-    out['xingd'] = xin[gd]
-    out['xoutgd'] = xout[gd]
-    out['xresgd'] = xres[gd]
-    out['isComplex'] = isComplex
-    out['ray'] = ray
-    out['nodcor'] = nodcor
-    out['z0'] = z0
-    out['dz0'] = dz0
+    out["nobs"] = nobs
+    out["ngood"] = ngood
+    out["dt"] = dt
+    out["xin"] = xin
+    out["xout"] = xout
+    out["xres"] = xres
+    out["xingd"] = xin[gd]
+    out["xoutgd"] = xout[gd]
+    out["xresgd"] = xres[gd]
+    out["isComplex"] = isComplex
+    out["ray"] = ray
+    out["nodcor"] = nodcor
+    out["z0"] = z0
+    out["dz0"] = dz0
 
-    out['fu'] = fu
-    out['nameu'] = nameu
-    out['tidecon'] = tideconout
-    out['snr'] = snr
-    out['synth'] = synth
-    out['lat'] = lat
-    out['ltype'] = ltype
+    out["fu"] = fu
+    out["nameu"] = nameu
+    out["tidecon"] = tideconout
+    out["snr"] = snr
+    out["synth"] = synth
+    out["lat"] = lat
+    out["ltype"] = ltype
     if stime is not None:
-        out['stime'] = stime
+        out["stime"] = stime
 
     # -----------------Output results-----------------------------------
     if out_style or outfile:
         if out_style:
-            method = out_style + '_style'
+            method = out_style + "_style"
         else:
-            method = 'classic_style'
+            method = "classic_style"
 
         if outfile:
             getattr(out, method)(to_file=outfile)
         else:
-            print(getattr(out, method)(), end='')
+            print(getattr(out, method)(), end="")
 
     return out

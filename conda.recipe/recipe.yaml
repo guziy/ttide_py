@@ -1,0 +1,45 @@
+schema_version: 1
+
+package:
+  name: ttide
+  version: "0.3.5"
+
+source:
+  path: ../.
+
+build:
+  # Increment build number when you need to rebuild the package without changing its version.
+  # For example, when:
+  # - Updating dependencies without changing package functionality
+  # - Fixing packaging issues (missing files, etc.)
+  # - Making build process changes
+  # Reset to 0 when you update the version number.
+  number: 1
+  noarch: python
+  script:
+    - python -m hatchling build
+    - python -m pip install dist/*.whl
+
+requirements:
+  host:
+    - python
+    - pip
+    - hatchling
+  run:
+    - python
+    - numpy
+    - scipy
+    - cython
+
+tests:
+  - python:
+      imports:
+        - ttide
+      pip_check: false  # this is the default
+
+
+about:
+  license: MIT
+  summary: Python distribution of the MatLab package TTide
+  homepage: https://github.com/moflaher/ttide_py
+

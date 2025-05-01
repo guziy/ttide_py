@@ -1,0 +1,52 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ttide"
+version = "0.3.5"
+description = "Python distribution of the MatLab package TTide"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.8"
+authors = [
+    {name = "Mitchell O'Flaherty-Sproul", email = "073208o@acadiau.ca"},
+]
+maintainers = [
+    {name = "Mitchell O'Flaherty-Sproul", email = "073208o@acadiau.ca"},
+]
+keywords = ["tide", "harmonic-analysis", "oceanography"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python"
+]
+dependencies = [
+    "numpy",
+    "scipy",
+    "cython"
+]
+
+[project.urls]
+Homepage = "https://github.com/moflaher/ttide_py"
+Repository = "https://github.com/moflaher/ttide_py"
+
+[tool.hatch.version]
+path = "ttide/__init__.py"
+
+[tool.pytest.ini_options]
+testpaths = ["test"]
+markers = [
+    "unit_tests: mark a test as a unit test",
+]
+addopts = "-vrf"
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff",
+] 
