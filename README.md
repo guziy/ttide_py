@@ -26,14 +26,71 @@ useful (either the Matlab version, or this Python one).
 Installation
 ============
 
-This has little to no testing. Use at your own risk. To install, run:
+This has little to no testing. Use at your own risk. There are several ways to install:
 
-    pip install .
+Using pip:
+```bash
+pip install ttide
+```
 
-Run the tests, from the project folder:
+Using conda:
+```bash
+conda install -c fortiers -c conda-forge fortiers::ttide
+```
 
-    py.test -v .
+From source:
+```bash
+git clone https://github.com:guziy/ttide_py.git
+cd ttide_py
+pip install .
+```
 
+Development Setup
+================
+
+To set up a development environment:
+
+1. Install pixi (package manager):
+```bash
+curl -fsSL https://pixi.sh/install.sh | bash
+```
+
+2. Clone the repository and install dependencies:
+```bash
+git clone https://github.com:guziy/ttide_py.git
+cd ttide_py
+pixi install
+```
+
+3. Available make commands:
+```bash
+# Testing
+make test              # Run tests
+make test-py38        # Test with Python 3.8
+make test-py39        # Test with Python 3.9
+make test-py310       # Test with Python 3.10
+make test-py311       # Test with Python 3.11
+make test-py312       # Test with Python 3.12
+make test-py313       # Test with Python 3.13
+make test-all         # Run tests with all Python versions
+
+# Code quality
+make lint             # Run linting
+make lint-fix         # Run linting with auto-fix
+make format           # Format code
+
+# Package management
+make conda-build      # Build conda package
+make conda-upload     # Upload conda package
+
+# Cleanup
+make clean            # Clean build artifacts
+```
+
+The project uses:
+- pytest for testing
+- ruff for linting and formatting
+- hatchling for building
 
 Example Usage
 =============
