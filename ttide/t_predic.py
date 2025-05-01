@@ -1,17 +1,18 @@
 from __future__ import division
-import numpy as np
-from .t_getconsts import t_getconsts
-from .t_vuf import t_vuf
-from . import time as tm
-from . import t_utils as tu
 
 import logging
+
+import numpy as np
+
+from . import t_utils as tu
+from . import time as tm
+from .t_getconsts import t_getconsts
+from .t_vuf import t_vuf
 
 logger = logging.getLogger(__name__)
 
 
-def t_predic(t_time, names, freq, tidecon,
-             lat=None, ltype='nodal', synth=0):
+def t_predic(t_time, names, freq, tidecon, lat=None, ltype="nodal", synth=0):
     """T_PREDIC Tidal prediction from tidal consituents.
 
     Parameters
@@ -53,7 +54,7 @@ def t_predic(t_time, names, freq, tidecon,
     """
 
     longseries = 0  # Currently only timeseries <18.6 years are supported.
-    if t_time.dtype.name.startswith('datetime64') or t_time.dtype == np.dtype("O"):
+    if t_time.dtype.name.startswith("datetime64") or t_time.dtype == np.dtype("O"):
         t_time = tm.date2num(t_time)
 
     t_time = t_time.reshape(-1, 1)
@@ -66,30 +67,31 @@ def t_predic(t_time, names, freq, tidecon,
     if synth > 0:
         I = snr > synth
         if not any(I):
-            logger.warning('No predictions with this SNR')
-            yout = np.nan + np.zeros_like(t_time, dtype='float64')
+            logger.warning("No predictions with this SNR")
+            yout = np.nan + np.zeros_like(t_time, dtype="float64")
             return yout
         tidecon = tidecon[I, :]
         names = names[I]
         freq = freq[I]
     if tidecon.shape[1] == 4:
         # Real time series
-        ap = np.multiply(tidecon[:, 0] / 2.0,
-                         np.exp(-1j * tidecon[:, 2] * np.pi / 180))
+        ap = np.multiply(tidecon[:, 0] / 2.0, np.exp(-1j * tidecon[:, 2] * np.pi / 180))
         am = np.conj(ap)
     else:
-        ap = np.multiply((tidecon[:, 0] + tidecon[:, 2]) / 2.0,
-                         np.exp(1j * np.pi / 180 * (tidecon[:, 4] - tidecon[:, 6])))
+        ap = np.multiply(
+            (tidecon[:, 0] + tidecon[:, 2]) / 2.0, np.exp(1j * np.pi / 180 * (tidecon[:, 4] - tidecon[:, 6]))
+        )
 
-        am = np.multiply((tidecon[:, 0] - tidecon[:, 2]) / 2.0,
-                         np.exp(1j * np.pi / 180 * (tidecon[:, 4] + tidecon[:, 6])))
+        am = np.multiply(
+            (tidecon[:, 0] - tidecon[:, 2]) / 2.0, np.exp(1j * np.pi / 180 * (tidecon[:, 4] + tidecon[:, 6]))
+        )
 
     # Mean at central point (get rid of one point at end to
     # take mean of odd number of points if necessary).
-    jdmid = np.mean(t_time[0:((2 * int((max(t_time.shape) - 1) / 2)) + 1)])
+    jdmid = np.mean(t_time[0 : ((2 * int((max(t_time.shape) - 1) / 2)) + 1)])
     if longseries:
         const = t_get18consts
-        ju = np.zeros(shape=(freq.shape, freq.shape), dtype='float64')
+        ju = np.zeros(shape=(freq.shape, freq.shape), dtype="float64")
         for k in range(1, (names.shape[0] + 1)):
             inam = strmatch(names[(k - 1), :], const.name)
             if max(inam.shape) == 1:
@@ -100,10 +102,10 @@ def t_predic(t_time, names, freq, tidecon,
                     ju[(k - 1)] = inam[(iminf - 1)]
     else:
         const, sat, cshallow = t_getconsts(np.array([]))
-        ju = np.zeros((len(freq),), dtype='int32')
+        ju = np.zeros((len(freq),), dtype="int32")
         # Check to make sure names and frequencies match expected values.
         for k in range(0, (names.shape[0])):
-            ju[k] = np.argwhere(const['name'] == names[(k)])
+            ju[k] = np.argwhere(const["name"] == names[(k)])
         # if any(freq~=const.freq(ju)),
         # error('Frequencies do not match names in input');
         # end;
@@ -115,9 +117,9 @@ def t_predic(t_time, names, freq, tidecon,
             # a real date
             v, u, f = t_vuf(ltype, jdmid, ju)
         else:
-            v = np.zeros((len(ju),), dtype='float64')
+            v = np.zeros((len(ju),), dtype="float64")
             u = v
-            f = np.ones((len(ju),), dtype='float64')
+            f = np.ones((len(ju),), dtype="float64")
 
     ap = ap * f * np.exp(+1j * 2 * np.pi * (u + v))
     am = am * f * np.exp(-1j * 2 * np.pi * (u + v))
@@ -126,15 +128,21 @@ def t_predic(t_time, names, freq, tidecon,
     n, m = t_time.shape
     ntime = max(t_time.shape)
     nsub = 10000
-    yout = np.zeros([n * m, ], dtype='complex128')
+    yout = np.zeros(
+        [
+            n * m,
+        ],
+        dtype="complex128",
+    )
 
     # longer than one year hourly.
     for j1 in range(0, ntime, nsub):
         j2 = min(j1 + nsub, ntime)
 
         touter = np.outer(24 * 1j * 2 * np.pi * freq, t_time[j1:j2])
-        yout[j1:j2] = np.sum(np.exp(touter) * ap[:, np.newaxis], axis=0) + \
-                      np.sum(np.exp(-touter) * am[:, np.newaxis], axis=0)
+        yout[j1:j2] = np.sum(np.exp(touter) * ap[:, np.newaxis], axis=0) + np.sum(
+            np.exp(-touter) * am[:, np.newaxis], axis=0
+        )
 
     if tidecon.shape[1] == 4:
         return np.real(yout)

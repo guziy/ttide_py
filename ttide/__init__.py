@@ -9,8 +9,10 @@ t_predic : The t_tide harmonic fit function.
 TTideCon : The t_tide constituents class (returned by t_tide).
 
 """
-from .t_tide import t_tide
-from .t_predic import t_predic
+
 from ttide.base import TTideCon
 
-__version__ = '0.3lfk'
+from .t_predic import t_predic
+from .t_tide import t_tide
+
+__version__ = "0.3.5"

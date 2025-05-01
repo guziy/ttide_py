@@ -1,0 +1,54 @@
+[project]
+name = "ttide"
+description = "Python distribution of the MatLab package TTide"
+authors = ["Mitchell O'Flaherty-Sproul <073208o@acadiau.ca>"]
+channels = ["fortiers", "conda-forge", "nodefaults"]
+platforms = ["linux-64"]
+
+
+[tasks.test]
+description = "Run package tests"
+cmd = "pytest -vrf"
+
+
+[tasks.lint]
+description = "Run lint on package"
+cmd = "ruff check ttide"
+
+
+[tasks.lint-fix]
+description = "Run lint-fix on package"
+cmd = "ruff check --fix ttide"
+
+[tasks.format]
+description = "Run format on package"
+cmd = "ruff format ttide"
+
+[tasks.get-version]
+description = "Check version"
+cmd = "python -c \"import ttide; print(ttide.__version__)\""
+
+[tasks.conda-build]
+cmd = "rattler-build build --recipe-dir conda.recipe --output-dir /tmp/conda-build -c fortiers -c conda-forge"
+
+[tasks.conda-upload]
+cmd = "rattler-build upload anaconda -v -o fortiers /tmp/conda-build/noarch/ttide-*.conda"
+depends-on = ["conda-build"]
+
+[dependencies]
+python = ">=3.8"
+numpy = "*"
+scipy = "*"
+cython = "*"
+
+[feature.dev.dependencies]
+hatchling = "*"
+pip = "*"
+pytest = ">=7.4.0"
+ruff = ">=0.0.280"
+
+
+[environments]
+dev = ["dev"]
+
+[target.linux-64.dependencies] 

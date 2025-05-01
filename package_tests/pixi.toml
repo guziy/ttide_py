@@ -1,0 +1,55 @@
+[project]
+name = "pynumeric-tests"
+description = "Test environments for pynumeric"
+authors = ["Sebastien Fortier <sebastien.fortier@ec.gc.ca>"]
+channels = ["conda-forge", "fortiers", "nodefaults"]
+platforms = ["linux-64"]
+
+
+[tasks.test]
+description = "Run package tests"
+cmd = "cp -r ../test . && pytest -vrf && rm -rf test"
+
+
+[dependencies]
+
+
+[feature.py38.dependencies]
+python = "3.8.*"
+ttide = { channel = "fortiers", version = ">=0.3.5" }
+pytest = "*"
+
+[feature.py39.dependencies]
+python = "3.9.*"
+ttide = { channel = "fortiers", version = ">=0.3.5" }
+pytest = "*"
+
+
+[feature.py310.dependencies]
+python = "3.10.*"
+ttide = { channel = "fortiers", version = ">=0.3.5" }
+pytest = "*"
+
+[feature.py311.dependencies]
+python = "3.11.*"
+ttide = { channel = "fortiers", version = ">=0.3.5" }
+pytest = "*"
+
+[feature.py312.dependencies]
+python = "3.12.*"
+ttide = { channel = "fortiers", version = ">=0.3.5" }
+pytest = "*"
+
+[feature.py313.dependencies]
+python = "3.13.*"
+ttide = { channel = "fortiers", version = ">=0.3.5" }
+pytest = "*"
+
+[environments]
+py38 = ["py38"]
+py39 = ["py39"]
+py310 = ["py310"]
+py311 = ["py311"]
+py312 = ["py312"]
+py313 = ["py313"]
+ 

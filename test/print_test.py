@@ -1,17 +1,19 @@
-from ttide.t_tide import t_tide
-import ttide.tests.base as bmod
-from io import StringIO
 import sys
+from io import StringIO
+
 import numpy as np
+
+from . import base as bmod
+from ttide.t_tide import t_tide
 
 
 def compare_string2file(string, fname):
-    with open(bmod.testdir + 'data/print/' + fname, 'r') as fl:
-        tdata = fl.read().replace('\r\n', '\n')
-    string = string.replace('\r\n', '\n')
+    with open(bmod.testdir + "data/print/" + fname, "r") as fl:
+        tdata = fl.read().replace("\r\n", "\n")
+    string = string.replace("\r\n", "\n")
     # The above .replace() calls makes sure that line-endings are
     # consistent
-    assert string == tdata, ("Test failed on file '%s'" % fname)
+    assert string == tdata, "Test failed on file '%s'" % fname
 
 
 def gen_print_tests(make_data=False):
@@ -27,11 +29,12 @@ def gen_print_tests(make_data=False):
         t_tide(**kwargs)
         sys.stdout = out_old
         if make_data:
-            with open(bmod.testdir + 'data/print/' + fname, 'w') as fl:
+            with open(bmod.testdir + "data/print/" + fname, "w") as fl:
                 fl.write(stdout.getvalue())
             yield None
         else:
             yield compare_string2file, stdout.getvalue(), fname
+
 
 # there are some differences in the outputs, maybe due to the bootstrap
 # not activating this test for now

@@ -1,10 +1,11 @@
-import numpy as np
 import os
 
+import numpy as np
+
 try:
-    testdir = os.path.dirname(os.path.realpath(__file__)) + '/'
+    testdir = os.path.dirname(os.path.realpath(__file__)) + "/"
 except NameError:
-    testdir = 'tests/'
+    testdir = "tests/"
 
 t = np.arange(1001)
 m2_freq = 2 * np.pi / 12.420601
@@ -26,47 +27,42 @@ cases = [
     ########################################################################
     # Elevation Test Cases
     ########################################################################
-
     # Basic test case
-    (dict(xin=ein), 'NoArgs.elev'),
+    (dict(xin=ein), "NoArgs.elev"),
     # No output test case
-    (dict(xin=ein, out_style=None), 'NoOutput.elev'),
+    (dict(xin=ein, out_style=None), "NoOutput.elev"),
     # Pandas output case
-    (dict(xin=ein, out_style='pandas'), 'PandasOut.elev'),
+    (dict(xin=ein, out_style="pandas"), "PandasOut.elev"),
     # M2 tides only
-    (dict(xin=ein, constitnames=['M2']), 'M2only.elev'),
+    (dict(xin=ein, constitnames=["M2"]), "M2only.elev"),
     # 5 tidal constituents (all should basically be zero other then M2)
-    (dict(xin=ein, constitnames=['M2', 'N2', 'S2', 'K1', 'O1']), '5constit.elev'),
+    (dict(xin=ein, constitnames=["M2", "N2", "S2", "K1", "O1"]), "5constit.elev"),
     # M2 tides with a starttime
-    (dict(xin=ein, constitnames=['M2'], stime=768000), 'M2only-Stime.elev'),
+    (dict(xin=ein, constitnames=["M2"], stime=768000), "M2only-Stime.elev"),
     # M2 tides with a starttime and latitude
-    (dict(xin=ein, constitnames=['M2'], stime=768000, lat=45), 'M2only-Stime-lat.elev'),
-
+    (dict(xin=ein, constitnames=["M2"], stime=768000, lat=45), "M2only-Stime-lat.elev"),
     ########################################################################
     # Shallow Test Cases
     ########################################################################
-
     # M2 tides and shallow
-    (dict(xin=sin, constitnames=['M2'], shallownames=['M10']), 'M2.shallowM10'),
+    (dict(xin=sin, constitnames=["M2"], shallownames=["M10"]), "M2.shallowM10"),
     # M2 tides and shallow and start_time
-    (dict(xin=sin, constitnames=['M2'], stime=768000, shallownames=['M10']), 'M2-Stime.shallowM10'),
-
+    (dict(xin=sin, constitnames=["M2"], stime=768000, shallownames=["M10"]), "M2-Stime.shallowM10"),
     ########################################################################
     # Current Test Cases
     ########################################################################
-
     # Basic test case
-    (dict(xin=uvin), 'NoArgs.vel'),
+    (dict(xin=uvin), "NoArgs.vel"),
     # No output test case
-    (dict(xin=uvin, out_style=None), 'NoOutput.vel'),
+    (dict(xin=uvin, out_style=None), "NoOutput.vel"),
     # Pandas output case
-    (dict(xin=uvin, out_style='pandas'), 'PandasOut.vel'),
+    (dict(xin=uvin, out_style="pandas"), "PandasOut.vel"),
     # M2 tides only
-    (dict(xin=uvin, constitnames=['M2']), 'M2only.vel'),
+    (dict(xin=uvin, constitnames=["M2"]), "M2only.vel"),
     # 5 tidal constituents (all should basically be zero other then M2)
-    (dict(xin=uvin, constitnames=['M2', 'N2', 'S2', 'K1', 'O1']), '5constit.vel'),
+    (dict(xin=uvin, constitnames=["M2", "N2", "S2", "K1", "O1"]), "5constit.vel"),
     # M2 tides with a starttime
-    (dict(xin=uvin, constitnames=['M2'], stime=768000), 'M2only-Stime.vel'),
+    (dict(xin=uvin, constitnames=["M2"], stime=768000), "M2only-Stime.vel"),
     # M2 tides with a starttime and latitude
-    (dict(xin=uvin, constitnames=['M2'], stime=768000, lat=45), 'M2only-Stime-lat.vel'),
+    (dict(xin=uvin, constitnames=["M2"], stime=768000, lat=45), "M2only-Stime-lat.vel"),
 ]
