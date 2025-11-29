@@ -50,3 +50,6 @@ dev = [
     "pytest",
     "ruff",
 ] 
+
+[tool.setuptools]
+packages = ["ttide"]
