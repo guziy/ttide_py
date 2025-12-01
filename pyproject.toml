@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-cython"]
 build-backend = "hatchling.build"
 
 [project]
@@ -53,3 +53,12 @@ dev = [
 
 [tool.setuptools]
 packages = ["ttide"]
+
+[tool.hatch.build.targets.wheel.hooks.cython.options]
+include_numpy = true
+files.targets = ["./ttide/*.pyx"]
+
+[tool.hatch.build.targets.wheel]
+artifacts = [
+  "ttide/*.so"
+]
