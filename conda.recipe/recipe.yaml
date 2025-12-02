@@ -15,7 +15,6 @@ build:
   # - Making build process changes
   # Reset to 0 when you update the version number.
   number: 1
-  noarch: python
   script:
     - python -m hatchling build
     - python -m pip install dist/*.whl

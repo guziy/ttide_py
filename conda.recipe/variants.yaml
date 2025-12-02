@@ -1,9 +1,15 @@
 # entries per package version that users are interested in
 python:
 # Note that versions are _strings_ (not numbers)
-- "3.8"
 - "3.9"
 - "3.10"
 - "3.11"
 - "3.12"
 - "3.13"
+
+
+# Force generic x86-64 compatibility instead of specific microarchitecture
+c_compiler_version: # [linux64] 
+  - 11 # [linux64] 
+target_platform: # [linux64] 
+  - linux-64 # [linux64]
