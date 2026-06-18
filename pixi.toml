@@ -6,9 +6,16 @@ channels = ["fortiers", "conda-forge", "nodefaults"]
 platforms = ["linux-64"]
 
 
+[tasks.build-cython]
+cmd = "python -m hatchling build"
+
+[tasks.clean]
+cmd = "find ./ttide -name '*.so' -delete"
+
 [tasks.test]
 description = "Run package tests"
 cmd = "pytest -vrf"
+depends-on = ["clean", "build-cython"]
 
 
 [tasks.lint]
@@ -29,7 +36,7 @@ description = "Check version"
 cmd = "python -c \"import ttide; print(ttide.__version__)\""
 
 [tasks.conda-build]
-cmd = "rattler-build build --recipe-dir conda.recipe --output-dir /tmp/conda-build -c fortiers -c conda-forge"
+cmd = "rattler-build build --recipe-dir conda.recipe --output-dir $TMPDIR/tmp/conda-build -c fortiers -c conda-forge"
 
 [tasks.conda-upload]
 cmd = "rattler-build upload anaconda -v -o fortiers /tmp/conda-build/noarch/ttide-*.conda"
@@ -39,13 +46,15 @@ depends-on = ["conda-build"]
 python = ">=3.8"
 numpy = "*"
 scipy = "*"
-cython = "*"
 
 [feature.dev.dependencies]
 hatchling = "*"
 pip = "*"
 pytest = ">=7.4.0"
 ruff = ">=0.0.280"
+hatch-cython = ">=0.6.0rc0,<0.7"
+setuptools = "*"
+cython = "*"
 
 
 [environments]

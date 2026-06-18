@@ -15,7 +15,6 @@ build:
   # - Making build process changes
   # Reset to 0 when you update the version number.
   number: 1
-  noarch: python
   script:
     - python -m hatchling build
     - python -m pip install dist/*.whl
@@ -25,6 +24,8 @@ requirements:
     - python
     - pip
     - hatchling
+    - hatch-cython
+    - numpy
   run:
     - python
     - numpy
@@ -35,6 +36,7 @@ tests:
   - python:
       imports:
         - ttide
+        - ttide.t_tidec 
       pip_check: false  # this is the default
 
 
