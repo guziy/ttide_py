@@ -8,7 +8,7 @@ This is a work in progress. It is not done.
 It is now mostly functional.
 Any help with finishing the conversion is welcome.
 
-Credit for T\_Tide goes to Rich Pawlowicz, the original creator of T\_Tide.
+Credit for T\_Tide goes to Rich Pawlowicz, the original creator of T\_Tide. 
 It is available at https://www.eoas.ubc.ca/~rich/.
 
 A description of the theoretical basis of the analysis and some

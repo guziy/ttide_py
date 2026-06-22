@@ -109,8 +109,8 @@ def t_tide(
                 series will remain and mean/trend are included).
 
     lsq : string
-        'direct'  - use A\ x fit
-        'normal'  - use (A'A)\(A'x) (may be necessary for very large
+        'direct'  - use A\\ x fit
+        'normal'  - use (A'A)\\(A'x) (may be necessary for very large
                   input vectors since A'A is much smaller than A)
           'best'  - automatically choose based on length of series
                   (default).
@@ -452,7 +452,7 @@ def t_tide(
     ####################################################################
     ii = np.flatnonzero(np.isfinite(jref))
     if ii.size > 0:
-        print("   Do inference corrections\\n")
+        print('   Do inference corrections\\n')
         snarg = nobsu * pi * dt * (fi[(ii - 1)] - fu[(jref[(ii - 1)] - 1)])
         scarg = np.sin(snarg) / snarg
         if infamprat.shape[1] == 1:
