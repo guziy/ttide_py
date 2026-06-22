@@ -1,4 +1,4 @@
-[project]
+[workspace]
 name = "ttide"
 description = "Python distribution of the MatLab package TTide"
 authors = ["Mitchell O'Flaherty-Sproul <073208o@acadiau.ca>"]
