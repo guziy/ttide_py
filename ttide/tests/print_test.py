@@ -1,3 +1,6 @@
+from ttide.t_tide import t_tide
+import ttide.tests.base as bmod
+from io import StringIO
 import sys
 from io import StringIO
 
